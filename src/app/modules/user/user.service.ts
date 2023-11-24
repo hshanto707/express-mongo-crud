@@ -21,20 +21,28 @@ const deleteUser = async (userId: string) => {
   return await UserModel.findOneAndDelete({ userId });
 };
 
-const addOrder = async (userId: number, orderData: Order): Promise<void> => {
+const addOrder = async (userId: number, orderData: Order) => {
   const user = await UserModel.findOne({ userId });
 
-  if (!user) {
-    throw new Error('User not found!');
-  }
+  if (!user)
+    return null;
 
   if (!user.orders) {
     user.orders = [];
   }
 
   user.orders.push(orderData);
-  await user.save();
+  return await user.save();
 }
+
+const getOrdersByUser = async (userId: number) => {
+  const user = await UserModel.findOne({ userId });
+
+  if (!user)
+    return null;
+
+  return user.orders || null;
+};
 
 export const UserServices = {
   getUsers,
@@ -43,4 +51,5 @@ export const UserServices = {
   updateUser,
   deleteUser,
   addOrder,
+  getOrdersByUser,
 };

@@ -126,13 +126,20 @@ const addOrder = async (req: Request, res: Response) => {
     const userId = parseInt(req.params.userId);
     const { order: orderData } = req.body;
 
-    await UserServices.addOrder(userId, orderData);
+    const order = await UserServices.addOrder(userId, orderData);
 
-    res.json({
-      success: true,
-      message: 'Order created successfully!',
-      data: null,
-    });
+    if (order)
+      res.json({
+        success: true,
+        message: 'Order created successfully!',
+        data: null,
+      });
+    else
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: null,
+      });
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -142,6 +149,34 @@ const addOrder = async (req: Request, res: Response) => {
   }
 }
 
+const getOrdersByUser = async (req: Request, res: Response) => {
+  try {
+    const userId = parseInt(req.params.userId, 10);
+    const orders = await UserServices.getOrdersByUser(userId);
+
+    if (orders)
+      res.json({
+        success: true,
+        message: 'Orders fetched successfully!',
+        data: {
+          orders,
+        },
+      });
+    else
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: null,
+      });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Something went wrong',
+      error: err,
+    });
+  }
+};
+
 export const UserControllers = {
   getUsers,
   getUserById,
@@ -149,4 +184,5 @@ export const UserControllers = {
   updateUser,
   deleteUser,
   addOrder,
+  getOrdersByUser,
 };
