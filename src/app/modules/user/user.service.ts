@@ -13,8 +13,13 @@ const createUser = async (userData: User) => {
   return await UserModel.create(userData);
 };
 
+const updateUser = async (userId: number, updatedData: User) => {
+  return await UserModel.findOneAndUpdate({ userId }, updatedData, { new: true, runValidators: true });
+};
+
 export const UserServices = {
   getUsers,
   getUserById,
   createUser,
+  updateUser,
 };

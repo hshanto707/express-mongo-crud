@@ -9,4 +9,6 @@ router.get('/:userId', UserControllers.getUserById);
 
 router.post('/', UserControllers.createUser);
 
+router.put('/:userId', UserControllers.updateUser);
+
 export const UserRoutes = router;
