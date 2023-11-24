@@ -4,41 +4,41 @@ import { Address, FullName, Order, User } from './user.interface'
 const fullNameSchema = new Schema<FullName>({
   firstName: {
     type: String,
-    required: true,
+    required: [true, 'First name is required!'],
   },
   lastName: {
     type: String,
-    required: true,
+    required: [true, 'Last name is required!'],
   },
 })
 
 const addressSchema = new Schema<Address>({
   street: {
     type: String,
-    required: true,
+    required: [true, 'Street is required!'],
   },
   city: {
     type: String,
-    required: true,
+    required: [true, 'City is required!'],
   },
   country: {
     type: String,
-    required: true,
+    required: [true, 'Country is required!'],
   },
 })
 
 const orderSchema = new Schema<Order>({
   productName: {
     type: String,
-    required: true,
+    required: [true, 'Product name is required!'],
   },
   price: {
     type: Number,
-    required: true,
+    required: [true, 'Product price is required!'],
   },
   quantity: {
     type: Number,
-    required: true,
+    required: [true, 'Product quantity is required!'],
   },
 })
 
@@ -46,29 +46,29 @@ const userSchema = new Schema<User>({
   userId: {
     type: Number,
     unique: true,
-    required: true,
+    required: [true, 'UserId is required!'],
   },
   username: {
     type: String,
     unique: true,
-    required: true,
+    required: [true, 'Username is required!'],
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Password is required!'],
   },
   fullName: {
     type: fullNameSchema,
-    required: true,
+    required: [true, 'Full name is required!'],
   },
   age: {
     type: Number,
-    required: true,
+    required: [true, 'Age is required!'],
   },
   email: {
     type: String,
     unique: true,
-    required: true,
+    required: [true, 'Email is required!'],
   },
   isActive: {
     type: Boolean,
@@ -80,7 +80,7 @@ const userSchema = new Schema<User>({
   },
   address: {
     type: addressSchema,
-    required: true,
+    required: [true, 'Address is required!'],
   },
   orders: {
     type: [orderSchema],
