@@ -1,4 +1,4 @@
-import { User } from "./user.interface";
+import { Order, User } from "./user.interface";
 import UserModel from "./user.model";
 
 const getUsers = async () => {
@@ -21,10 +21,26 @@ const deleteUser = async (userId: string) => {
   return await UserModel.findOneAndDelete({ userId });
 };
 
+const addOrder = async (userId: number, orderData: Order): Promise<void> => {
+  const user = await UserModel.findOne({ userId });
+
+  if (!user) {
+    throw new Error('User not found!');
+  }
+
+  if (!user.orders) {
+    user.orders = [];
+  }
+
+  user.orders.push(orderData);
+  await user.save();
+}
+
 export const UserServices = {
   getUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
+  addOrder,
 };
