@@ -24,12 +24,9 @@ const deleteUser = async (userId: string) => {
 const addOrder = async (userId: number, orderData: Order) => {
   const user = await UserModel.findOne({ userId });
 
-  if (!user)
-    return null;
+  if (!user) return null;
 
-  if (!user.orders) {
-    user.orders = [];
-  }
+  if (!user.orders) user.orders = [];
 
   user.orders.push(orderData);
   return await user.save();
@@ -38,10 +35,17 @@ const addOrder = async (userId: number, orderData: Order) => {
 const getOrdersByUser = async (userId: number) => {
   const user = await UserModel.findOne({ userId });
 
-  if (!user)
-    return null;
+  if (!user) return null;
 
-  return user.orders || null;
+  return user.orders;
+};
+
+const getTotalPrice = async (userId: number) => {
+  const user = await UserModel.findOne({ userId });
+
+  if (!user) return null;
+
+  return user.orders.reduce((acc, order) => acc + order.price * order.quantity, 0);
 };
 
 export const UserServices = {
@@ -52,4 +56,5 @@ export const UserServices = {
   deleteUser,
   addOrder,
   getOrdersByUser,
+  getTotalPrice,
 };
