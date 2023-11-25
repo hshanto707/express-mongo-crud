@@ -63,9 +63,9 @@ const getUserById = async (req: Request, res: Response) => {
 const createUser = async (req: Request, res: Response) => {
   try {
     const { user: userData } = req.body;
-    userData.password = await bcrypt.hash(userData.password, 10);
 
     const { error, value } = UserValidationSchema.validate(userData);
+    value.password = await bcrypt.hash(value.password, 10);
 
     if (error)
       res.status(500).json({
@@ -97,9 +97,9 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
     const { user: userData } = req.body;
-    userData.password = await bcrypt.hash(userData.password, 10);
-
+    
     const { error, value } = UserValidationSchema.validate(userData);
+    value.password = await bcrypt.hash(value.password, 10);
 
     if (error)
       res.status(500).json({
