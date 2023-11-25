@@ -69,8 +69,9 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user: userData } = req.body;
-        userData.password = hashPassword(userData.password);
         const { error, value } = user_validation_1.UserValidationSchema.validate(userData);
+        console.log(value);
+        value.password = yield bcrypt_1.default.hash(value.password, 10);
         if (error)
             res.status(500).json({
                 success: false,
@@ -100,6 +101,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const userId = parseInt(req.params.userId);
         const { user: userData } = req.body;
         const { error, value } = user_validation_1.UserValidationSchema.validate(userData);
+        value.password = yield bcrypt_1.default.hash(value.password, 10);
         if (error)
             res.status(500).json({
                 success: false,
@@ -225,7 +227,8 @@ const getTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const userId = parseInt(req.params.userId, 10);
         const totalPrice = yield user_service_1.UserServices.getTotalPrice(userId);
-        if (totalPrice)
+        console.log(totalPrice);
+        if (totalPrice != null)
             res.json({
                 success: true,
                 message: 'Total price calculated successfully!',

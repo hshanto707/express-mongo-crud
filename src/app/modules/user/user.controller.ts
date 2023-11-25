@@ -65,6 +65,8 @@ const createUser = async (req: Request, res: Response) => {
     const { user: userData } = req.body;
 
     const { error, value } = UserValidationSchema.validate(userData);
+    console.log(value);
+    
     value.password = await bcrypt.hash(value.password, 10);
 
     if (error)
@@ -240,7 +242,7 @@ const getTotalPrice = async (req: Request, res: Response) => {
     const userId = parseInt(req.params.userId, 10);
     const totalPrice = await UserServices.getTotalPrice(userId);
 
-    if (totalPrice)
+    if (totalPrice != null)
       res.json({
         success: true,
         message: 'Total price calculated successfully!',
