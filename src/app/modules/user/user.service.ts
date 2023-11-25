@@ -61,7 +61,7 @@ const getTotalPrice = async (userId: number) => {
 
   if (!user) return null;
 
-  return user.orders.reduce((acc, order) => acc + order.price * order.quantity, 0);
+  return user.orders.reduce((acc, order) => acc + order.price * order.quantity, 0); // Calculate the total cost of all orders by multiplying each order's price with its quantity and summing them up.
 };
 
 export const UserServices = {
