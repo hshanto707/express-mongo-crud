@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
+import { OrderValidationSchema, UserValidationSchema } from './user.validation';
+
+// GET ALL USERS
 
 const getUsers = async (req: Request, res: Response) => {
   try {
@@ -18,6 +21,8 @@ const getUsers = async (req: Request, res: Response) => {
     });
   }
 };
+
+// GET SINGLE USER BY USER ID
 
 const getUserById = async (req: Request, res: Response) => {
   try {
@@ -46,17 +51,29 @@ const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+// CREATE USER
+
 const createUser = async (req: Request, res: Response) => {
   try {
     const { user: userData } = req.body;
 
-    const result = await UserServices.createUser(userData);
+    const { error, value } = UserValidationSchema.validate(userData);
 
-    res.status(200).json({
-      success: true,
-      message: 'User created successfully!',
-      data: result,
-    });
+    if (error)
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong',
+        error: error.details,
+      });
+    else {
+      const result = await UserServices.createUser(value);
+
+      res.status(200).json({
+        success: true,
+        message: 'User created successfully!',
+        data: result,
+      });
+    }
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -65,26 +82,40 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// UPDATE USER
 
 const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
     const { user: userData } = req.body;
 
-    const updatedUser = await UserServices.updateUser(userId, userData);
+    const { error, value } = UserValidationSchema.validate(userData);
 
-    if (updatedUser) 
-      res.json({
-        success: true,
-        message: 'User updated successfully!',
-        data: updatedUser,
-      });
-    else
-      res.status(404).json({
+    if (error)
+      res.status(500).json({
         success: false,
-        message: 'User not found',
-        data: null,
+        message: 'Something went wrong',
+        error: error.details,
       });
+    else {
+      const updatedUser = await UserServices.updateUser(userId, value);
+
+      if (updatedUser)
+        res.json({
+          success: true,
+          message: 'User updated successfully!',
+          data: updatedUser,
+        });
+      else
+        res.status(404).json({
+          success: false,
+          message: 'User not found',
+          data: null,
+        });
+    }
+
+    
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -93,6 +124,8 @@ const updateUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// DELETE USER
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
@@ -121,25 +154,37 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// ADD NEW ORDER
+
 const addOrder = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
     const { order: orderData } = req.body;
 
-    const order = await UserServices.addOrder(userId, orderData);
+    const { error, value } = OrderValidationSchema.validate(orderData);
 
-    if (order)
-      res.json({
-        success: true,
-        message: 'Order created successfully!',
-        data: null,
-      });
-    else
-      res.status(404).json({
+    if (error)
+      res.status(500).json({
         success: false,
-        message: 'User not found!',
-        data: null,
+        message: 'Something went wrong',
+        error: error.details,
       });
+    else {
+      const order = await UserServices.addOrder(userId, value);
+  
+      if (order)
+        res.json({
+          success: true,
+          message: 'Order created successfully!',
+          data: null,
+        });
+      else
+        res.status(404).json({
+          success: false,
+          message: 'User not found!',
+          data: null,
+        });
+    }
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -148,6 +193,8 @@ const addOrder = async (req: Request, res: Response) => {
     });
   }
 }
+
+// GET ALL ORDERS OF A USER
 
 const getOrdersByUser = async (req: Request, res: Response) => {
   try {
@@ -176,6 +223,8 @@ const getOrdersByUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// GET THE TOTAL PRICE OF A USER'S ORDERS
 
 const getTotalPrice = async (req: Request, res: Response) => {
   try {
