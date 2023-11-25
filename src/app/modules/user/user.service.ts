@@ -22,6 +22,7 @@ const createUser = async (userData: User) => {
 // UPDATE USER
 
 const updateUser = async (userId: number, updatedData: User) => {
+
   return await UserModel.findOneAndUpdate({ userId }, updatedData, { new: true, runValidators: true });
 };
 

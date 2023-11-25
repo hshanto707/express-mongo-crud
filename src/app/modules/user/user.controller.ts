@@ -1,6 +1,13 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
 import { OrderValidationSchema, UserValidationSchema } from './user.validation';
+import bcrypt from 'bcrypt';
+
+const hashPassword = async (password: string) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+};
 
 // GET ALL USERS
 
@@ -56,6 +63,7 @@ const getUserById = async (req: Request, res: Response) => {
 const createUser = async (req: Request, res: Response) => {
   try {
     const { user: userData } = req.body;
+    userData.password = await bcrypt.hash(userData.password, 10);
 
     const { error, value } = UserValidationSchema.validate(userData);
 
@@ -89,6 +97,7 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
     const { user: userData } = req.body;
+    userData.password = await bcrypt.hash(userData.password, 10);
 
     const { error, value } = UserValidationSchema.validate(userData);
 
