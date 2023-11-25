@@ -247,7 +247,7 @@ const getTotalPrice = async (req: Request, res: Response) => {
         success: true,
         message: 'Total price calculated successfully!',
         data: {
-          totalPrice,
+          totalPrice: totalPrice.toFixed(2),
         },
       });
     else

@@ -227,13 +227,12 @@ const getTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const userId = parseInt(req.params.userId, 10);
         const totalPrice = yield user_service_1.UserServices.getTotalPrice(userId);
-        console.log(totalPrice);
         if (totalPrice != null)
             res.json({
                 success: true,
                 message: 'Total price calculated successfully!',
                 data: {
-                    totalPrice,
+                    totalPrice: totalPrice.toFixed(2),
                 },
             });
         else
