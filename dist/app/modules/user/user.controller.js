@@ -16,11 +16,6 @@ exports.UserControllers = void 0;
 const user_service_1 = require("./user.service");
 const user_validation_1 = require("./user.validation");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
-    const saltRounds = 10;
-    const hashedPassword = yield bcrypt_1.default.hash(password, saltRounds);
-    return hashedPassword;
-});
 // GET ALL USERS
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -68,9 +63,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 // CREATE USER
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { user: userData } = req.body;
-        const { error, value } = user_validation_1.UserValidationSchema.validate(userData);
-        console.log(value);
+        const { error, value } = user_validation_1.UserValidationSchema.validate(req.body);
         value.password = yield bcrypt_1.default.hash(value.password, 10);
         if (error)
             res.status(500).json({
@@ -99,8 +92,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = parseInt(req.params.userId);
-        const { user: userData } = req.body;
-        const { error, value } = user_validation_1.UserValidationSchema.validate(userData);
+        const { error, value } = user_validation_1.UserValidationSchema.validate(req.body);
         value.password = yield bcrypt_1.default.hash(value.password, 10);
         if (error)
             res.status(500).json({
@@ -162,8 +154,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 const addOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = parseInt(req.params.userId);
-        const { order: orderData } = req.body;
-        const { error, value } = user_validation_1.OrderValidationSchema.validate(orderData);
+        const { error, value } = user_validation_1.OrderValidationSchema.validate(req.body);
         if (error)
             res.status(500).json({
                 success: false,

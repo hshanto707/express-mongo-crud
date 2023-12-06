@@ -3,12 +3,6 @@ import { UserServices } from './user.service';
 import { OrderValidationSchema, UserValidationSchema } from './user.validation';
 import bcrypt from 'bcrypt';
 
-const hashPassword = async (password: string) => {
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  return hashedPassword;
-};
-
 // GET ALL USERS
 
 const getUsers = async (req: Request, res: Response) => {
@@ -62,13 +56,10 @@ const getUserById = async (req: Request, res: Response) => {
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user: userData } = req.body;
-
-    const { error, value } = UserValidationSchema.validate(userData);
-    console.log(value);
+    const { error, value } = UserValidationSchema.validate(req.body);
     
     value.password = await bcrypt.hash(value.password, 10);
-
+    
     if (error)
       res.status(500).json({
         success: false,
@@ -98,9 +89,8 @@ const createUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
-    const { user: userData } = req.body;
     
-    const { error, value } = UserValidationSchema.validate(userData);
+    const { error, value } = UserValidationSchema.validate(req.body);
     value.password = await bcrypt.hash(value.password, 10);
 
     if (error)
@@ -170,9 +160,8 @@ const deleteUser = async (req: Request, res: Response) => {
 const addOrder = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
-    const { order: orderData } = req.body;
-
-    const { error, value } = OrderValidationSchema.validate(orderData);
+    
+    const { error, value } = OrderValidationSchema.validate(req.body);
 
     if (error)
       res.status(500).json({
